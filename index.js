@@ -5,15 +5,42 @@ const boardElement = document.getElementById('board');
 const statusElement = document.getElementById('status');
 const alertElement = document.getElementById('alert');
 const restartButton = document.getElementById('restart');
-const playerXRename = document.getElementById('player1');
-const playerORename = document.getElementById('player2');
+const newGameButton = document.getElementById(`newGame`);
+let playerXRename = document.getElementById(`player1`);
+let playerORename = document.getElementById(`player2`);
 
-let playerX = '';
-let playerO = '';
+function names () {
+  playerXRename.innerText = playerX;
+  playerORename.innerText = playerO;
+}
+
+newGameButton.onclick = () => {
+  // Show the player name inputs and start button
+  playerXInput.style.display = 'inline';
+  playerOInput.style.display = 'inline';
+  startButton.style.display = 'inline';
+  restartButton.style.display = 'none';
+  newGameButton.style.display = 'none';
+  boardElement.style.display = 'none';
+  
+  // Reset the player name displays
+  playerXRename.style.display = 'none';
+  playerORename.style.display = 'none';
+  
+  // Reset the game state
+  board = ['', '', '', '', '', '', '', '', ''];
+  gameActive = true;
+  currentPlayer = 'X';
+  statusElement.textContent = '';
+  alertElement.style.display = 'none';
+  renderBoard(); // Update the board to show empty cells
+};
+
 
 let board = ['', '', '', '', '', '', '', '', ''];
 let currentPlayer = 'X';
 let gameActive = true;
+let storedPlayer = 'X'; // Store the current player before switching
 
 const winningConditions = [
   [0, 1, 2],
@@ -28,79 +55,99 @@ const winningConditions = [
 
 const renderBoard = () => {
   boardElement.innerHTML = '';
-  board.forEach((cell, index) => {
+  const cells = [];
+  for (let i = 0; i < 9; i++) {
     const cellElement = document.createElement('div');
     cellElement.classList.add('cell');
-    cellElement.onclick = () => handleCellClick(index); // Attach event listener
-    cellElement.textContent = cell;
-    if (cell === 'X') {
-      cellElement.classList.add('X');
-    } else if (cell === 'O') {
-      cellElement.classList.add('O');
-    }
+    cellElement.onclick = () => handleCellClick(i); // Attach event listener outside the function
     boardElement.appendChild(cellElement);
+    cells.push(cellElement);
+  }
+  cells.forEach((cell, index) => {
+    if (board[index] === 'X') {
+      cell.classList.add('X');
+    } else if (board[index] === 'O') {
+      cell.classList.add('O');
+    }
+    cell.textContent = board[index];
   });
 };
 
-const startGame = () => {
-  playerX = playerXInput.value.trim();
-  playerO = playerOInput.value.trim();
-
-  // Validate that both names are provided
-  if (playerX === '' || playerO === '') {
-    alert("Both player names must be filled in.");
-    return;
+const renderBoardOnRestart = () => {
+  boardElement.innerHTML = '';
+  const cells = [];
+  for (let i = 0; i < 9; i++) {
+    const cellElement = document.createElement('div');
+    cellElement.classList.add('cell');
+    cellElement.onclick = () => handleCellClick(i); // Attach event listener outside the function
+    boardElement.appendChild(cellElement);
+    cells.push(cellElement);
   }
+  cells.forEach((cell, index) => {
+    cell.textContent = '';
+  });
+  renderBoard(); // Call renderBoard to update the board
+};
 
-  playerXRename.innerText = playerX;
-  playerORename.innerText = playerO;
+const startGame = () => {
+    playerX = playerXInput.value.trim();
+    playerO = playerOInput.value.trim();
 
-  // Hide input fields
-  playerXInput.style.display = 'none';
-  playerOInput.style.display = 'none';
-  startButton.style.display = 'none';
+    // Validate that both names are provided
+    if (playerX === `` || playerO === ``) {
+        alert("Both player names must be filled in.");
+        return;
+    }
 
-  // Show player names
-  playerXRename.style.display = 'block';
-  playerORename.style.display = 'block';
+    names();
 
-  // Initialize the game
-  board = ['', '', '', '', '', '', '', '', ''];
-  gameActive = true;
-  currentPlayer = 'X';
-  statusElement.textContent = `${playerX}'s Turn`;
-  statusElement.style.display = 'block';
-  alertElement.style.display = 'none';
-  renderBoard();
-  boardElement.style.display = 'grid';
-  restartButton.style.display = 'inline';
+    // Hide input fields only after successful validation
+    playerXInput.style.display = 'none';
+    playerOInput.style.display = 'none';
+    startButton.style.display = 'none';
+
+    playerXRename.style.display = 'block'; // Show player 1 name
+    playerORename.style.display = 'block'; // Show player 2 name
+
+
+    // Reset the game board and state
+    board = ['', '', '', '', '', '', '', '', ''];
+    gameActive = true;
+    currentPlayer = 'X'; // X starts first
+    statusElement.textContent = `${playerX}'s Turn`;
+    statusElement.style.display = 'block';
+
+    alertElement.style.display = 'none'; // Hide any existing alerts
+    renderBoard();
+    boardElement.style.display = 'grid';
+    restartButton.style.display = 'inline';
+    newGameButton.style.display = 'inline';
 };
 
 const handleCellClick = (index) => {
   if (board[index] !== '' || !gameActive) return;
 
   board[index] = currentPlayer;
-  const winner = checkResult(); // Check for a winner after the move
-  if (winner) {
-    gameActive = false;
-    alertElement.textContent = `${winner === 'X' ? playerX : playerO} Wins!`;
-    alertElement.classList.add('alert-success');
-    alertElement.style.display = 'block';
-  } else {
-    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-    statusElement.textContent = `${currentPlayer === 'X' ? playerX : playerO}'s Turn`;
-  }
+  storedPlayer = currentPlayer; // Store the current player before switching
+  currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+  statusElement.textContent = `${currentPlayer === 'X' ? playerX : playerO}'s Turn`;
+  checkResult();
   renderBoard();
 };
 
 const checkResult = () => {
-  for (const condition of winningConditions) {
-    const [a, b, c] = condition;
+  for (let i = 0; i < winningConditions.length; i++) {
+    const [a, b, c] = winningConditions[i];
     if (board[a] === board[b] && board[b] === board[c] && board[a] !== '') {
-      return board[a]; // Return the winning player ('X' or 'O')
+      gameActive = false;
+      alertElement.textContent = `${storedPlayer === 'X' ? playerX : playerO} Wins!`;
+      alertElement.classList.add('alert-success');
+      alertElement.style.display = 'block';
+      
+      return;
     }
   }
-  // Check for a draw
+  
   if (!board.includes('')) {
     gameActive = false;
     alertElement.textContent = `It's a Draw!`;
@@ -108,20 +155,18 @@ const checkResult = () => {
     alertElement.classList.add('alert-warning');
     alertElement.style.display = 'block';
   }
-  return null; // No winner found
 };
 
 const restartGame = () => {
+  storedPlayer = 'X';
   currentPlayer = 'X';
   board = ['', '', '', '', '', '', '', '', ''];
   gameActive = true;
   alertElement.style.display = 'none';
-  statusElement.textContent = `${playerX}'s Turn`;
-  renderBoard();
+  statusElement.textContent = `${currentPlayer}'s Turn`;
+  renderBoardOnRestart(); // Call renderBoardOnRestart to update the board on restart
 };
 
-// Event listeners
 startButton.onclick = startGame;
 restartButton.onclick = restartGame;
-
 renderBoard();
