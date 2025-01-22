@@ -5,19 +5,15 @@ const boardElement = document.getElementById('board');
 const statusElement = document.getElementById('status');
 const alertElement = document.getElementById('alert');
 const restartButton = document.getElementById('restart');
-let playerXRename = document.getElementById(`player1`);
-let playerORename = document.getElementById(`player2`);
+const playerXRename = document.getElementById('player1');
+const playerORename = document.getElementById('player2');
 
-function names () {
-  playerXRename.innerText = playerX;
-  playerORename.innerText = playerO;
-}
-
+let playerX = '';
+let playerO = '';
 
 let board = ['', '', '', '', '', '', '', '', ''];
 let currentPlayer = 'X';
 let gameActive = true;
-let storedPlayer = 'X'; // Store the current player before switching
 
 const winningConditions = [
   [0, 1, 2],
@@ -32,97 +28,79 @@ const winningConditions = [
 
 const renderBoard = () => {
   boardElement.innerHTML = '';
-  const cells = [];
-  for (let i = 0; i < 9; i++) {
+  board.forEach((cell, index) => {
     const cellElement = document.createElement('div');
     cellElement.classList.add('cell');
-    cellElement.onclick = () => handleCellClick(i); // Attach event listener outside the function
-    boardElement.appendChild(cellElement);
-    cells.push(cellElement);
-  }
-  cells.forEach((cell, index) => {
-    if (board[index] === 'X') {
-      cell.classList.add('X');
-    } else if (board[index] === 'O') {
-      cell.classList.add('O');
+    cellElement.onclick = () => handleCellClick(index); // Attach event listener
+    cellElement.textContent = cell;
+    if (cell === 'X') {
+      cellElement.classList.add('X');
+    } else if (cell === 'O') {
+      cellElement.classList.add('O');
     }
-    cell.textContent = board[index];
-  });
-};
-
-const renderBoardOnRestart = () => {
-  boardElement.innerHTML = '';
-  const cells = [];
-  for (let i = 0; i < 9; i++) {
-    const cellElement = document.createElement('div');
-    cellElement.classList.add('cell');
-    cellElement.onclick = () => handleCellClick(i); // Attach event listener outside the function
     boardElement.appendChild(cellElement);
-    cells.push(cellElement);
-  }
-  cells.forEach((cell, index) => {
-    cell.textContent = '';
   });
-  renderBoard(); // Call renderBoard to update the board
 };
 
 const startGame = () => {
-    playerX = playerXInput.value.trim();
-    playerO = playerOInput.value.trim();
+  playerX = playerXInput.value.trim();
+  playerO = playerOInput.value.trim();
 
-    // Validate that both names are provided
-    if (playerX === `` || playerO === ``) {
-        alert("Both player names must be filled in.");
-        return;
-    }
+  // Validate that both names are provided
+  if (playerX === '' || playerO === '') {
+    alert("Both player names must be filled in.");
+    return;
+  }
 
-    names();
+  playerXRename.innerText = playerX;
+  playerORename.innerText = playerO;
 
-    // Hide input fields only after successful validation
-    playerXInput.style.display = 'none';
-    playerOInput.style.display = 'none';
-    startButton.style.display = 'none';
+  // Hide input fields
+  playerXInput.style.display = 'none';
+  playerOInput.style.display = 'none';
+  startButton.style.display = 'none';
 
-    playerXRename.style.display = 'block'; // Show player 1 name
-    playerORename.style.display = 'block'; // Show player 2 name
+  // Show player names
+  playerXRename.style.display = 'block';
+  playerORename.style.display = 'block';
 
-
-    // Reset the game board and state
-    board = ['', '', '', '', '', '', '', '', ''];
-    gameActive = true;
-    currentPlayer = 'X'; // X starts first
-    statusElement.textContent = `${playerX}'s Turn`;
-    statusElement.style.display = 'block';
-
-    alertElement.style.display = 'none'; // Hide any existing alerts
-    renderBoard();
-    boardElement.style.display = 'grid';
-    restartButton.style.display = 'inline';
+  // Initialize the game
+  board = ['', '', '', '', '', '', '', '', ''];
+  gameActive = true;
+  currentPlayer = 'X';
+  statusElement.textContent = `${playerX}'s Turn`;
+  statusElement.style.display = 'block';
+  alertElement.style.display = 'none';
+  renderBoard();
+  boardElement.style.display = 'grid';
+  restartButton.style.display = 'inline';
 };
 
 const handleCellClick = (index) => {
   if (board[index] !== '' || !gameActive) return;
 
   board[index] = currentPlayer;
-  storedPlayer = currentPlayer; // Store the current player before switching
-  currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-  statusElement.textContent = `${currentPlayer === 'X' ? playerX : playerO}'s Turn`;
-  checkResult();
+  const winner = checkResult(); // Check for a winner after the move
+  if (winner) {
+    gameActive = false;
+    alertElement.textContent = `${winner === 'X' ? playerX : playerO} Wins!`;
+    alertElement.classList.add('alert-success');
+    alertElement.style.display = 'block';
+  } else {
+    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    statusElement.textContent = `${currentPlayer === 'X' ? playerX : playerO}'s Turn`;
+  }
   renderBoard();
 };
 
 const checkResult = () => {
-  for (let i = 0; i < winningConditions.length; i++) {
-    const [a, b, c] = winningConditions[i];
+  for (const condition of winningConditions) {
+    const [a, b, c] = condition;
     if (board[a] === board[b] && board[b] === board[c] && board[a] !== '') {
-      gameActive = false;
-      alertElement.textContent = `${currentPlayer === 'X' ? playerX : playerO} Wins!`;
-      alertElement.classList.add('alert-success');
-      alertElement.style.display = 'block';
-      return;
+      return board[a]; // Return the winning player ('X' or 'O')
     }
   }
-  
+  // Check for a draw
   if (!board.includes('')) {
     gameActive = false;
     alertElement.textContent = `It's a Draw!`;
@@ -130,18 +108,20 @@ const checkResult = () => {
     alertElement.classList.add('alert-warning');
     alertElement.style.display = 'block';
   }
+  return null; // No winner found
 };
 
 const restartGame = () => {
-  storedPlayer = 'X';
   currentPlayer = 'X';
   board = ['', '', '', '', '', '', '', '', ''];
   gameActive = true;
   alertElement.style.display = 'none';
-  statusElement.textContent = `${currentPlayer}'s Turn`;
-  renderBoardOnRestart(); // Call renderBoardOnRestart to update the board on restart
+  statusElement.textContent = `${playerX}'s Turn`;
+  renderBoard();
 };
 
+// Event listeners
 startButton.onclick = startGame;
 restartButton.onclick = restartGame;
+
 renderBoard();
