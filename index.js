@@ -14,28 +14,6 @@ function names () {
   playerORename.innerText = playerO;
 }
 
-const newGame = () => {
-  // Show the player name inputs and start button
-  playerXInput.style.display = 'inline';
-  playerOInput.style.display = 'inline';
-  startButton.style.display = 'inline';
-  restartButton.style.display = 'none';
-  newGameButton.style.display = 'none';
-  boardElement.style.display = 'none';
-  
-  // Reset the player name displays
-  playerXRename.style.display = 'none';
-  playerORename.style.display = 'none';
-  
-  // Reset the game state
-  board = ['', '', '', '', '', '', '', '', ''];
-  gameActive = true;
-  currentPlayer = 'X';
-  statusElement.textContent = '';
-  alertElement.style.display = 'none';
-  renderBoard(); // Update the board to show empty cells
-};
-
 
 let board = ['', '', '', '', '', '', '', '', ''];
 let currentPlayer = 'X';
@@ -165,6 +143,28 @@ const restartGame = () => {
   alertElement.style.display = 'none';
   statusElement.textContent = `${currentPlayer}'s Turn`;
   renderBoardOnRestart(); // Call renderBoardOnRestart to update the board on restart
+};
+
+const newGame = () => {
+  // Show the player name inputs and start button
+  playerXInput.style.display = 'inline';
+  playerOInput.style.display = 'inline';
+  startButton.style.display = 'inline';
+  restartButton.style.display = 'none';
+  newGameButton.style.display = 'none';
+  boardElement.style.display = 'none';
+  
+  // Reset the player name displays
+  playerXRename.style.display = 'none';
+  playerORename.style.display = 'none';
+  
+  // Reset the game state
+  board = ['', '', '', '', '', '', '', '', ''];
+  gameActive = true;
+  currentPlayer = 'X';
+  statusElement.textContent = '';
+  alertElement.style.display = 'none';
+  renderBoard(); // Update the board to show empty cells
 };
 
 startButton.onclick = startGame;
