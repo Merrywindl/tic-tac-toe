@@ -14,7 +14,7 @@ function names () {
   playerORename.innerText = playerO;
 }
 
-newGameButton.onclick = () => {
+const newGame = () => {
   // Show the player name inputs and start button
   playerXInput.style.display = 'inline';
   playerOInput.style.display = 'inline';
@@ -169,4 +169,5 @@ const restartGame = () => {
 
 startButton.onclick = startGame;
 restartButton.onclick = restartGame;
+newGameButton.onclick = newGame;
 renderBoard();
