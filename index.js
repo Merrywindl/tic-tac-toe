@@ -5,9 +5,9 @@ const boardElement = document.getElementById('board');
 const statusElement = document.getElementById('status');
 const alertElement = document.getElementById('alert');
 const restartButton = document.getElementById('restart');
-const newGameButton = document.getElementById(`newGame`);
-let playerXRename = document.getElementById(`player1`);
-let playerORename = document.getElementById(`player2`);
+const newGameButton = document.getElementById('newGame');
+let playerXRename = document.getElementById('player1');
+let playerORename = document.getElementById('player2');
 
 function names () {
   playerXRename.innerText = playerX;
