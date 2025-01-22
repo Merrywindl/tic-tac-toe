@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic-Tac-Toe</title>
+  <link href="node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+  <style>
+    .board { display: grid; grid-template-columns: repeat(3, 100px); gap: 5px; justify-self: center;}
+    .cell { display: flex; justify-content: center; align-items: center; width: 100px; height: 100px; border: 10px solid #39FF14; font-size: 2rem; cursor: pointer; }
+    .cell:hover { background-color: #f0f0f0; }
+    body {
+        background-color: aqua;
+    }
+    .cell.X { color: blue;}
+    .cell.O { color: red;}
+    .col-sm {
+        font-weight: bold;
+    }
+    
+    input {
+        background-color: aqua !important;
+    }
+
+    
+    
+  </style>
+</head>
+<body>
+  <div class="container mt-5 text-center">
+    <h1>Tic-Tac-Toe</h1>
+    <div class="row">
+        <div class="col-sm" id="player1" style="display: none;">PlayerX</div>
+        <div class="col-sm" id="status" style="display: none;">X's Turn</div> 
+        <div class="col-sm" id="player2" style="display: none;">playerO</div>       
+    </div>
+    <div>
+        <input type="text" id="playerX" placeholder="Player X Name" required>
+        <input type="text" id="playerO" placeholder="Player O Name" required>
+    </div>
+    <button class="btn btn-primary mt-3" id="start">Start Game</button>
+    
+    <div class="board" id="board" style="display: none;"></div>
+    <button class="btn btn-primary mt-3" id="restart" style="display: none;">Restart Game</button>
+    <div id="alert" class="alert alert-success mt-3" style="display: none;"></div>
+  </div>
+
+  <script src="index.js"></script>
+  <script src="node_modules/jquery/dist/jquery.js"></script>
+  <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+
+</body>
+</html>
