@@ -5,14 +5,36 @@ const boardElement = document.getElementById('board');
 const statusElement = document.getElementById('status');
 const alertElement = document.getElementById('alert');
 const restartButton = document.getElementById('restart');
-const newGameButton = document.getElementById('new');
-let playerXRename = document.getElementById('player1');
-let playerORename = document.getElementById('player2');
+const newGameButton = document.getElementById('newGame');
+let playerXRename = document.getElementById(`player1`);
+let playerORename = document.getElementById(`player2`);
 
 function names () {
   playerXRename.innerText = playerX;
   playerORename.innerText = playerO;
 }
+
+newGameButton.onclick = () => {
+  // Show the player name inputs and start button
+  playerXInput.style.display = 'inline';
+  playerOInput.style.display = 'inline';
+  startButton.style.display = 'inline';
+  restartButton.style.display = 'none';
+  newGameButton.style.display = 'none';
+  boardElement.style.display = 'none';
+  
+  // Reset the player name displays
+  playerXRename.style.display = 'none';
+  playerORename.style.display = 'none';
+  
+  // Reset the game state
+  board = ['', '', '', '', '', '', '', '', ''];
+  gameActive = true;
+  currentPlayer = 'X';
+  statusElement.textContent = '';
+  alertElement.style.display = 'none';
+  renderBoard(); // Update the board to show empty cells
+};
 
 
 let board = ['', '', '', '', '', '', '', '', ''];
@@ -145,29 +167,6 @@ const restartGame = () => {
   renderBoardOnRestart(); // Call renderBoardOnRestart to update the board on restart
 };
 
-const newGame = () => {
-  // Show the player name inputs and start button
-  playerXInput.style.display = 'inline';
-  playerOInput.style.display = 'inline';
-  startButton.style.display = 'inline';
-  restartButton.style.display = 'none';
-  newGameButton.style.display = 'none';
-  boardElement.style.display = 'none';
-  
-  // Reset the player name displays
-  playerXRename.style.display = 'none';
-  playerORename.style.display = 'none';
-  
-  // Reset the game state
-  board = ['', '', '', '', '', '', '', '', ''];
-  gameActive = true;
-  currentPlayer = 'X';
-  statusElement.textContent = '';
-  alertElement.style.display = 'none';
-  renderBoard(); // Update the board to show empty cells
-};
-
 startButton.onclick = startGame;
 restartButton.onclick = restartGame;
-newGameButton.onclick = newGame;
 renderBoard();
