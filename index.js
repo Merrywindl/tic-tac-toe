@@ -5,7 +5,7 @@ const boardElement = document.getElementById('board');
 const statusElement = document.getElementById('status');
 const alertElement = document.getElementById('alert');
 const restartButton = document.getElementById('restart');
-const newGameButton = document.getElementById('newGame');
+const newGameButton = document.getElementById('new');
 let playerXRename = document.getElementById('player1');
 let playerORename = document.getElementById('player2');
 
